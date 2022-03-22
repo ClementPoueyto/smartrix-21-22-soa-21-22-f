@@ -1,0 +1,695 @@
+version: '3.8'
+
+services: 
+  consumption-viewer:
+    container_name: consumption-viewer
+    image: consumption-viewer
+    build:
+      context: .
+      dockerfile: ./Dockerfile
+    ports:
+      - 3000:3000
+    networks:
+      - grid-network
+    environment:
+      app_name: consumption-viewer
+      SERVICE_DB_HOST: ${DATABASE_HOST}:${DATABASE_PORT}
+      SERVICE_DB_USER: ${DATABASE_USERNAME}
+      SERVICE_DB_PASSWORD: ${DATABASE_PASSWORD}
+      DB_URL: mongodb://${DATABASE_HOST}:${DATABASE_PORT}/${DATABASE_NAME}
+    depends_on:
+      kafka:
+        condition: service_healthy
+    volumes:
+      - .:/usr/src/app
+      - /usr/src/app/node_modules
+    restart: unless-stopped
+
+  consumption-storer:
+    container_name: consumption-storer
+    image: consumption-storer
+    build:
+      context: .
+      dockerfile: ./Dockerfile
+    ports:
+      - 3001:3001
+    networks:
+      - grid-network
+    environment:
+      app_name: consumption-storer
+      SERVICE_DB_HOST: ${DATABASE_HOST}:${DATABASE_PORT}
+      SERVICE_DB_USER: ${DATABASE_USERNAME}
+      SERVICE_DB_PASSWORD: ${DATABASE_PASSWORD}
+      DB_URL: mongodb://${DATABASE_HOST}:${DATABASE_PORT}/${DATABASE_NAME}
+    depends_on:
+      kafka:
+        condition: service_healthy
+    volumes:
+      - .:/usr/src/app
+      - /usr/src/app/node_modules
+    restart: unless-stopped
+
+  house:
+    container_name: house
+    image: house
+    build:
+      context: .
+      dockerfile: ./Dockerfile
+    ports:
+      - 3002:3002
+    networks:
+      - grid-network
+    environment:
+      app_name: house
+      SERVICE_DB_HOST: ${DATABASE_HOST}:${DATABASE_PORT}
+      SERVICE_DB_USER: ${DATABASE_USERNAME}
+      SERVICE_DB_PASSWORD: ${DATABASE_PASSWORD}
+      DB_URL: mongodb://${DATABASE_HOST}:${DATABASE_PORT}/${DATABASE_NAME}
+    depends_on:
+      kafka:
+        condition: service_healthy
+    volumes:
+      - .:/usr/src/app
+      - /usr/src/app/node_modules
+    restart: unless-stopped
+    profiles: ["real_time"]
+  
+  supplier:
+    container_name: supplier
+    image: supplier
+    build:
+      context: .
+      dockerfile: ./Dockerfile
+    ports:
+      - 3003:3003
+    networks:
+      - grid-network
+    environment:
+      app_name: supplier
+      SERVICE_DB_HOST: ${DATABASE_HOST}:${DATABASE_PORT}
+      SERVICE_DB_USER: ${DATABASE_USERNAME}
+      SERVICE_DB_PASSWORD: ${DATABASE_PASSWORD}
+      DB_URL: mongodb://${DATABASE_HOST}:${DATABASE_PORT}/${DATABASE_NAME}
+    depends_on:
+      kafka:
+        condition: service_healthy
+    volumes:
+      - .:/usr/src/app
+      - /usr/src/app/node_modules
+    restart: unless-stopped
+
+  balancer:
+    container_name: balancer
+    image: balancer
+    build:
+      context: .
+      dockerfile: ./Dockerfile
+    ports:
+      - 3004:3004
+    networks:
+      - grid-network
+    environment:
+      app_name: balancer
+      SERVICE_DB_HOST: ${DATABASE_HOST}:${DATABASE_PORT}
+      SERVICE_DB_USER: ${DATABASE_USERNAME}
+      SERVICE_DB_PASSWORD: ${DATABASE_PASSWORD}
+      DB_URL: mongodb://${DATABASE_HOST}:${DATABASE_PORT}/${DATABASE_NAME}
+    depends_on:
+      kafka:
+        condition: service_healthy
+    volumes:
+      - .:/usr/src/app
+      - /usr/src/app/node_modules
+    restart: unless-stopped
+
+  analytics:
+    container_name: analytics
+    image: analytics
+    build:
+      context: .
+      dockerfile: ./Dockerfile
+    ports:
+      - 3005:3005
+    networks:
+      - grid-network
+    environment:
+      app_name: analytics
+      SERVICE_DB_HOST: ${DATABASE_HOST}:${DATABASE_PORT}
+      SERVICE_DB_USER: ${DATABASE_USERNAME}
+      SERVICE_DB_PASSWORD: ${DATABASE_PASSWORD}
+      DB_URL: mongodb://${DATABASE_HOST}:${DATABASE_PORT}/${DATABASE_NAME}
+      CONSUMPTION_VIEWER_URL: consumption-viewer:3000
+      CONSUMPTION_STORER_URL: consumption-storer:3001
+      DAY_CONSUMPTION_STORER_URL: consumption-day-storer:3015
+    depends_on:
+      kafka:
+        condition: service_healthy
+    volumes:
+      - .:/usr/src/app
+      - /usr/src/app/node_modules
+    restart: unless-stopped
+
+  consumption-requester:
+    container_name: consumption-requester
+    image: consumption-requester
+    build:
+      context: .
+      dockerfile: ./Dockerfile
+    ports:
+      - 3006:3006
+    networks:
+      - grid-network
+    environment:
+      app_name: consumption-requester
+      SERVICE_DB_HOST: ${DATABASE_HOST}:${DATABASE_PORT}
+      SERVICE_DB_USER: ${DATABASE_USERNAME}
+      SERVICE_DB_PASSWORD: ${DATABASE_PASSWORD}
+      DB_URL: mongodb://${DATABASE_HOST}:${DATABASE_PORT}/${DATABASE_NAME}
+    depends_on:
+      kafka:
+        condition: service_healthy
+    volumes:
+      - .:/usr/src/app
+      - /usr/src/app/node_modules
+    restart: unless-stopped
+
+  consumption-requested-listener:
+    container_name: consumption-requested-listener
+    image: consumption-requested-listener
+    build:
+      context: .
+      dockerfile: ./Dockerfile
+    ports:
+      - 3007:3007
+    networks:
+      - grid-network
+    environment:
+      app_name: consumption-requested-listener
+      SERVICE_DB_HOST: ${DATABASE_HOST}:${DATABASE_PORT}
+      SERVICE_DB_USER: ${DATABASE_USERNAME}
+      SERVICE_DB_PASSWORD: ${DATABASE_PASSWORD}
+      DB_URL: mongodb://${DATABASE_HOST}:${DATABASE_PORT}/${DATABASE_NAME}
+    depends_on:
+      kafka:
+        condition: service_healthy
+    volumes:
+      - .:/usr/src/app
+      - /usr/src/app/node_modules
+    restart: unless-stopped
+
+  consumption-contract:
+    container_name: consumption-contract
+    image: consumption-contract
+    build:
+      context: .
+      dockerfile: ./Dockerfile
+    ports:
+      - 3008:3008
+    networks:
+      - grid-network
+    environment:
+      app_name: consumption-contract
+      SERVICE_DB_HOST: ${DATABASE_HOST}:${DATABASE_PORT}
+      SERVICE_DB_USER: ${DATABASE_USERNAME}
+      SERVICE_DB_PASSWORD: ${DATABASE_PASSWORD}
+      DB_URL: mongodb://${DATABASE_HOST}:${DATABASE_PORT}/${DATABASE_NAME}
+    depends_on:
+      kafka:
+        condition: service_healthy
+    volumes:
+      - .:/usr/src/app
+      - /usr/src/app/node_modules
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl -fail http://localhost:3008/ || exit 1"]     
+      interval: 5s
+      timeout: 10s
+      retries: 10
+
+  client-invoice:
+    container_name: client-invoice
+    image: client-invoice
+    build:
+      context: .
+      dockerfile: ./Dockerfile
+    ports:
+      - 3009:3009
+    networks:
+      - grid-network
+    environment:
+      app_name: client-invoice
+      SERVICE_DB_HOST: ${DATABASE_HOST}:${DATABASE_PORT}
+      SERVICE_DB_USER: ${DATABASE_USERNAME}
+      SERVICE_DB_PASSWORD: ${DATABASE_PASSWORD}
+      DB_URL: mongodb://${DATABASE_HOST}:${DATABASE_PORT}/${DATABASE_NAME}
+      ANALYTICS_URL: analytics:3005
+      CONSUMPTION_CONTRACT_URL: consumption-contract:3008
+      PRODUCTION_CONTRACT_URL: production-contract:3011
+      PRODUCTION_STORER_URL : production-storer:3013
+    depends_on:
+      kafka:
+        condition: service_healthy
+    volumes:
+      - .:/usr/src/app
+      - /usr/src/app/node_modules
+    restart: unless-stopped
+  
+  
+  production-contract:
+    container_name: production-contract
+    image: production-contract
+    build:
+      context: .
+      dockerfile: ./Dockerfile
+    ports:
+      - 3016:3016
+    networks:
+      - grid-network
+    environment:
+      app_name: production-contract
+      SERVICE_DB_HOST: ${DATABASE_HOST}:${DATABASE_PORT}
+      SERVICE_DB_USER: ${DATABASE_USERNAME}
+      SERVICE_DB_PASSWORD: ${DATABASE_PASSWORD}
+      DB_URL: mongodb://${DATABASE_HOST}:${DATABASE_PORT}/${DATABASE_NAME}
+    depends_on:
+      kafka:
+        condition: service_healthy
+    volumes:
+      - .:/usr/src/app
+      - /usr/src/app/node_modules
+    restart: unless-stopped
+
+  production-requester:
+    container_name: production-requester
+    image: production-requester
+    build:
+      context: .
+      dockerfile: ./Dockerfile
+    ports:
+      - 3010:3010
+    networks:
+      - grid-network
+    environment:
+      app_name: production-requester
+      SERVICE_DB_HOST: ${DATABASE_HOST}:${DATABASE_PORT}
+      SERVICE_DB_USER: ${DATABASE_USERNAME}
+      SERVICE_DB_PASSWORD: ${DATABASE_PASSWORD}
+      DB_URL: mongodb://${DATABASE_HOST}:${DATABASE_PORT}/${DATABASE_NAME}
+    depends_on:
+      kafka:
+        condition: service_healthy
+    volumes:
+      - .:/usr/src/app
+      - /usr/src/app/node_modules
+    restart: unless-stopped
+
+  battery-service:
+    container_name: battery-service
+    image: battery-service
+    build:
+      context: .
+      dockerfile: ./Dockerfile
+    ports:
+      - 3012:3012
+    networks:
+      - grid-network
+    environment:
+      app_name: battery-service
+      SERVICE_DB_HOST: ${DATABASE_HOST}:${DATABASE_PORT}
+      SERVICE_DB_USER: ${DATABASE_USERNAME}
+      SERVICE_DB_PASSWORD: ${DATABASE_PASSWORD}
+      DB_URL: mongodb://${DATABASE_HOST}:${DATABASE_PORT}/${DATABASE_NAME}
+    depends_on:
+      kafka:
+        condition: service_healthy
+    volumes:
+      - .:/usr/src/app
+      - /usr/src/app/node_modules
+    restart: unless-stopped
+
+  production-storer:
+    container_name: production-storer
+    image: production-storer
+    build:
+      context: .
+      dockerfile: ./Dockerfile
+    ports:
+      - 3013:3013
+    networks:
+      - grid-network
+    environment:
+      app_name: production-storer
+      SERVICE_DB_HOST: ${DATABASE_HOST}:${DATABASE_PORT}
+      SERVICE_DB_USER: ${DATABASE_USERNAME}
+      SERVICE_DB_PASSWORD: ${DATABASE_PASSWORD}
+      DB_URL: mongodb://${DATABASE_HOST}:${DATABASE_PORT}/${DATABASE_NAME}
+    depends_on:
+      kafka:
+        condition: service_healthy
+    volumes:
+      - .:/usr/src/app
+      - /usr/src/app/node_modules
+    restart: unless-stopped
+
+  five-min-consumption-aggregator:
+    container_name: five-min-consumption-aggregator
+    image: five-min-consumption-aggregator
+    build:
+      context: .
+      dockerfile: ./Dockerfile
+    ports:
+      - 3014:3014
+    networks:
+      - grid-network
+    environment:
+      app_name: five-min-consumption-aggregator
+      SERVICE_DB_HOST: ${DATABASE_HOST}:${DATABASE_PORT}
+      SERVICE_DB_USER: ${DATABASE_USERNAME}
+      SERVICE_DB_PASSWORD: ${DATABASE_PASSWORD}
+      DB_URL: mongodb://${DATABASE_HOST}:${DATABASE_PORT}/${DATABASE_NAME}
+    depends_on:
+      kafka:
+        condition: service_healthy
+    volumes:
+      - .:/usr/src/app
+      - /usr/src/app/node_modules
+    restart: unless-stopped  
+  
+  consumption-day-storer:
+    container_name: consumption-day-storer
+    image: consumption-day-storer
+    build:
+      context: .
+      dockerfile: ./Dockerfile
+    ports:
+      - 3015:3015
+    networks:
+      - grid-network
+    environment:
+      app_name: consumption-day-storer
+      SERVICE_DB_HOST: ${DATABASE_HOST}:${DATABASE_PORT}
+      SERVICE_DB_USER: ${DATABASE_USERNAME}
+      SERVICE_DB_PASSWORD: ${DATABASE_PASSWORD}
+      DB_URL: mongodb://${DATABASE_HOST}:${DATABASE_PORT}/${DATABASE_NAME}
+    depends_on:
+      kafka:
+        condition: service_healthy
+    volumes:
+      - .:/usr/src/app
+      - /usr/src/app/node_modules
+    restart: unless-stopped  
+
+  client-autarky-detector:
+    container_name: client-autarky-detector
+    image: client-autarky-detector
+    build:
+      context: .
+      dockerfile: ./Dockerfile
+    ports:
+      - 3017:3017
+    networks:
+      - grid-network
+    environment:
+      app_name: client-autarky-detector
+      SERVICE_DB_HOST: ${DATABASE_HOST}:${DATABASE_PORT}
+      SERVICE_DB_USER: ${DATABASE_USERNAME}
+      SERVICE_DB_PASSWORD: ${DATABASE_PASSWORD}
+      DB_URL: mongodb://${DATABASE_HOST}:${DATABASE_PORT}/${DATABASE_NAME}
+    depends_on:
+      kafka:
+        condition: service_healthy
+    volumes:
+      - .:/usr/src/app
+      - /usr/src/app/node_modules
+    restart: unless-stopped
+
+  five-min-autarky-aggregator:
+    container_name: five-min-autarky-aggregator
+    image: five-min-autarky-aggregator
+    build:
+      context: .
+      dockerfile: ./Dockerfile
+    ports:
+      - 3018:3018
+    networks:
+      - grid-network
+    environment:
+      app_name: five-min-autarky-aggregator
+      SERVICE_DB_HOST: ${DATABASE_HOST}:${DATABASE_PORT}
+      SERVICE_DB_USER: ${DATABASE_USERNAME}
+      SERVICE_DB_PASSWORD: ${DATABASE_PASSWORD}
+      DB_URL: mongodb://${DATABASE_HOST}:${DATABASE_PORT}/${DATABASE_NAME}
+    depends_on:
+      kafka:
+        condition: service_healthy
+    volumes:
+      - .:/usr/src/app
+      - /usr/src/app/node_modules
+    restart: unless-stopped
+
+  client-autarky-notifier:
+    container_name: client-autarky-notifier
+    image: client-autarky-notifier
+    build:
+      context: .
+      dockerfile: ./Dockerfile
+    ports:
+      - 3019:3019
+    networks:
+      - grid-network
+    environment:
+      app_name: client-autarky-notifier
+      SERVICE_DB_HOST: ${DATABASE_HOST}:${DATABASE_PORT}
+      SERVICE_DB_USER: ${DATABASE_USERNAME}
+      SERVICE_DB_PASSWORD: ${DATABASE_PASSWORD}
+      DB_URL: mongodb://${DATABASE_HOST}:${DATABASE_PORT}/${DATABASE_NAME}
+    depends_on:
+      kafka:
+        condition: service_healthy
+    volumes:
+      - .:/usr/src/app
+      - /usr/src/app/node_modules
+    restart: unless-stopped
+
+  autarky-hour-storer:
+    container_name: autarky-hour-storer
+    image: autarky-hour-storer
+    build:
+      context: .
+      dockerfile: ./Dockerfile
+    ports:
+      - 3020:3020
+    networks:
+      - grid-network
+    environment:
+      app_name: autarky-hour-storer
+      SERVICE_DB_HOST: ${DATABASE_HOST}:${DATABASE_PORT}
+      SERVICE_DB_USER: ${DATABASE_USERNAME}
+      SERVICE_DB_PASSWORD: ${DATABASE_PASSWORD}
+      DB_URL: mongodb://${DATABASE_HOST}:${DATABASE_PORT}/${DATABASE_NAME}
+    depends_on:
+      kafka:
+        condition: service_healthy
+    volumes:
+      - .:/usr/src/app
+      - /usr/src/app/node_modules
+    restart: unless-stopped
+
+  autarky-day-storer:
+    container_name: autarky-day-storer
+    image: autarky-day-storer
+    build:
+      context: .
+      dockerfile: ./Dockerfile
+    ports:
+      - 3021:3021
+    networks:
+      - grid-network
+    environment:
+      app_name: autarky-day-storer
+      SERVICE_DB_HOST: ${DATABASE_HOST}:${DATABASE_PORT}
+      SERVICE_DB_USER: ${DATABASE_USERNAME}
+      SERVICE_DB_PASSWORD: ${DATABASE_PASSWORD}
+      DB_URL: mongodb://${DATABASE_HOST}:${DATABASE_PORT}/${DATABASE_NAME}
+    depends_on:
+      kafka:
+        condition: service_healthy
+    volumes:
+      - .:/usr/src/app
+      - /usr/src/app/node_modules
+    restart: unless-stopped
+
+  consumption-authorizer:
+    container_name: consumption-authorizer
+    image: consumption-authorizer
+    build:
+      context: .
+      dockerfile: ./Dockerfile
+    ports:
+      - 3022:3022
+    networks:
+      - grid-network
+    environment:
+      app_name: consumption-authorizer
+      SERVICE_DB_HOST: ${DATABASE_HOST}:${DATABASE_PORT}
+      SERVICE_DB_USER: ${DATABASE_USERNAME}
+      SERVICE_DB_PASSWORD: ${DATABASE_PASSWORD}
+      DB_URL: mongodb://${DATABASE_HOST}:${DATABASE_PORT}/${DATABASE_NAME}
+    depends_on:
+      kafka:
+        condition: service_healthy
+    volumes:
+      - .:/usr/src/app
+      - /usr/src/app/node_modules
+    restart: unless-stopped
+
+  autarky-viewer:
+    container_name: autarky-viewer
+    image: autarky-viewer
+    build:
+      context: .
+      dockerfile: ./Dockerfile
+    ports:
+      - 3023:3023
+    networks:
+      - grid-network
+    environment:
+      app_name: autarky-viewer
+      SERVICE_DB_HOST: ${DATABASE_HOST}:${DATABASE_PORT}
+      SERVICE_DB_USER: ${DATABASE_USERNAME}
+      SERVICE_DB_PASSWORD: ${DATABASE_PASSWORD}
+      DB_URL: mongodb://${DATABASE_HOST}:${DATABASE_PORT}/${DATABASE_NAME}
+    depends_on:
+      kafka:
+        condition: service_healthy
+    volumes:
+      - .:/usr/src/app
+      - /usr/src/app/node_modules
+    restart: unless-stopped
+
+  district-autarky-detector:
+    container_name: district-autarky-detector
+    image: district-autarky-detector
+    build:
+      context: .
+      dockerfile: ./Dockerfile
+    ports:
+      - 3024:3024
+    networks:
+      - grid-network
+    environment:
+      app_name: district-autarky-detector
+      SERVICE_DB_HOST: ${DATABASE_HOST}:${DATABASE_PORT}
+      SERVICE_DB_USER: ${DATABASE_USERNAME}
+      SERVICE_DB_PASSWORD: ${DATABASE_PASSWORD}
+      DB_URL: mongodb://${DATABASE_HOST}:${DATABASE_PORT}/${DATABASE_NAME}
+    depends_on:
+      kafka:
+        condition: service_healthy
+    volumes:
+      - .:/usr/src/app
+      - /usr/src/app/node_modules
+    restart: unless-stopped
+
+  district-autarky-notifier:
+    container_name: district-autarky-notifier
+    image: district-autarky-notifier
+    build:
+      context: .
+      dockerfile: ./Dockerfile
+    ports:
+      - 3025:3025
+    networks:
+      - grid-network
+    environment:
+      app_name: district-autarky-notifier
+      SERVICE_DB_HOST: ${DATABASE_HOST}:${DATABASE_PORT}
+      SERVICE_DB_USER: ${DATABASE_USERNAME}
+      SERVICE_DB_PASSWORD: ${DATABASE_PASSWORD}
+      DB_URL: mongodb://${DATABASE_HOST}:${DATABASE_PORT}/${DATABASE_NAME}
+    depends_on:
+      kafka:
+        condition: service_healthy
+    volumes:
+      - .:/usr/src/app
+      - /usr/src/app/node_modules
+    restart: unless-stopped
+
+
+  mongodb:
+    image : mongo:latest
+    container_name: mongodb
+    volumes:
+      - db_data:/data/db
+    env_file:
+      - .env
+    environment:
+      MONGO_INITDB_ROOT_DATABASE: ${DATABASE_NAME}
+      MONGO_INITDB_ROOT_USERNAME: ${DATABASE_USERNAME}
+      MONGO_INITDB_ROOT_PASSWORD: ${DATABASE_PASSWORD}
+    ports:
+      - "${DATABASE_PORT}:${DATABASE_PORT}"
+    networks:
+      - grid-network
+    restart: always
+  
+  zookeeper:
+    container_name: zookeeper
+    image: wurstmeister/zookeeper:latest
+    environment:
+      ZOOKEEPER_CLIENT_PORT: 2181
+      ZOOKEEPER_TICK_TIME: 2000
+    ports:
+      - 2181:2181
+    networks:
+      - grid-network
+
+  kafka:
+    image: wurstmeister/kafka
+    container_name: kafka
+    environment:
+      KAFKA_ADVERTISED_HOST_NAME: kafka
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+      KAFKA_AUTO_CREATE_TOPICS_ENABLE: 'true'
+      KAFKA_DELETE_TOPIC_ENABLE: 'true'
+      KAFKA_ADVERTISED_LISTENERS: INSIDE://kafka:29092,OUTSIDE://localhost:9092
+      KAFKA_LISTENERS: INSIDE://:29092,OUTSIDE://:9092
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: INSIDE:PLAINTEXT,OUTSIDE:PLAINTEXT
+      KAFKA_INTER_BROKER_LISTENER_NAME: INSIDE
+      KAFKA_CREATE_TOPICS: "energy.consumed:1:1,energy.produced:1:1,energy.less.requested:1:1,energy.more.requested:1:1,balance.calculated.bydistrict:1:1,balance.calculated.global:1:1,energy.requested:1:1,mock.time.changed:1:1,five.min.energy.consumed:1:1,hour.energy.consumed:1:1,energy.consumption.reduce1:1,autarky.client.calculated:1:1,autarky.district.calculated:1:1,autarky.client.changed:1:1,autarky.district.changed:1:1,five.min.autarky.client.calculated:1:1,five.min.autarky.district.calculated:1:1,hour.autarky.client.calculated:1:1,hour.autarky.district.calculated:1:1,day.autarky.client.calculated:1:1,day.autarky.district.calculated:1:1,energy.consumption.reopen:1:1,car.charge.authorization1:1"
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+      KAFKA_BROKER_ID: 1
+    networks:
+      - grid-network
+    ports:
+      - 9092:9092
+    depends_on:
+      - zookeeper
+      - mongodb
+    healthcheck:
+      test: ["CMD-SHELL", "kafka-topics.sh --bootstrap-server 127.0.0.1:9092 --topic energy.consumed --describe"]     
+      interval: 5s
+      timeout: 10s
+      retries: 10
+
+  kafka_ui:
+    image: provectuslabs/kafka-ui:latest
+    container_name: kafka_ui
+    depends_on:
+      kafka:
+        condition: service_healthy
+    ports:
+      - 8080:8080
+    environment:
+      KAFKA_CLUSTERS_0_ZOOKEEPER: zookeeper:2181
+      KAFKA_CLUSTERS_0_NAME: local
+      KAFKA_CLUSTERS_0_BOOTSTRAPSERVERS: kafka:29092
+    networks:
+      - grid-network 
+  
+networks:
+  grid-network:
+    driver: bridge    
+
+volumes:
+  db_data: {}

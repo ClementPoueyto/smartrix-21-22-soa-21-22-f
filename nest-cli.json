@@ -1,0 +1,246 @@
+{
+  "collection": "@nestjs/schematics",
+  "sourceRoot": "apps/consumption-viewer/src",
+  "monorepo": true,
+  "root": "apps/consumption-viewer",
+  "compilerOptions": {
+    "webpack": true,
+    "tsConfigPath": "apps/consumption-viewer/tsconfig.app.json"
+  },
+  "projects": {
+    "consumption-viewer": {
+      "type": "application",
+      "root": "apps/consumption-viewer",
+      "entryFile": "main",
+      "sourceRoot": "apps/consumption-viewer/src",
+      "compilerOptions": {
+        "tsConfigPath": "apps/consumption-viewer/tsconfig.app.json"
+      }
+    },
+    "consumption-storer": {
+      "type": "application",
+      "root": "apps/consumption-storer",
+      "entryFile": "main",
+      "sourceRoot": "apps/consumption-storer/src",
+      "compilerOptions": {
+        "tsConfigPath": "apps/consumption-storer/tsconfig.app.json"
+      }
+    },
+    "house": {
+      "type": "application",
+      "root": "apps/house",
+      "entryFile": "main",
+      "sourceRoot": "apps/house/src",
+      "compilerOptions": {
+        "tsConfigPath": "apps/house/tsconfig.app.json"
+      }
+    },
+    "supplier": {
+      "type": "application",
+      "root": "apps/supplier",
+      "entryFile": "main",
+      "sourceRoot": "apps/supplier/src",
+      "compilerOptions": {
+        "tsConfigPath": "apps/supplier/tsconfig.app.json"
+      }
+    },
+    "balancer": {
+      "type": "application",
+      "root": "apps/balancer",
+      "entryFile": "main",
+      "sourceRoot": "apps/balancer/src",
+      "compilerOptions": {
+        "tsConfigPath": "apps/balancer/tsconfig.app.json"
+      }
+    },
+    "analytics": {
+      "type": "application",
+      "root": "apps/analytics",
+      "entryFile": "main",
+      "sourceRoot": "apps/analytics/src",
+      "compilerOptions": {
+        "tsConfigPath": "apps/analytics/tsconfig.app.json"
+      }
+    },
+    "consumption-requester": {
+      "type": "application",
+      "root": "apps/consumption-requester",
+      "entryFile": "main",
+      "sourceRoot": "apps/consumption-requester/src",
+      "compilerOptions": {
+        "tsConfigPath": "apps/consumption-requester/tsconfig.app.json"
+      }
+    },
+    "consumption-requested-listener": {
+      "type": "application",
+      "root": "apps/consumption-requested-listener",
+      "entryFile": "main",
+      "sourceRoot": "apps/consumption-requested-listener/src",
+      "compilerOptions": {
+        "tsConfigPath": "apps/consumption-requested-listener/tsconfig.app.json"
+      }
+    },
+    "client-invoice": {
+      "type": "application",
+      "root": "apps/client-invoice",
+      "entryFile": "main",
+      "sourceRoot": "apps/client-invoice/src",
+      "compilerOptions": {
+        "tsConfigPath": "apps/client-invoice/tsconfig.app.json"
+      }
+    },
+    "consumption-contract": {
+      "type": "application",
+      "root": "apps/consumption-contract",
+      "entryFile": "main",
+      "sourceRoot": "apps/consumption-contract/src",
+      "compilerOptions": {
+        "tsConfigPath": "apps/consumption-contract/tsconfig.app.json"
+      }
+    },
+    "production-requester": {
+      "type": "application",
+      "root": "apps/production-requester",
+      "entryFile": "main",
+      "sourceRoot": "apps/production-requester/src",
+      "compilerOptions": {
+        "tsConfigPath": "apps/production-requester/tsconfig.app.json"
+      }
+    },
+    "five-min-consumption-aggregator": {
+      "type": "application",
+      "root": "apps/five-min-consumption-aggregator",
+      "entryFile": "main",
+      "sourceRoot": "apps/five-min-consumption-aggregator/src",
+      "compilerOptions": {
+        "tsConfigPath": "apps/five-min-consumption-aggregator/tsconfig.app.json"
+      }
+    },
+    "production-contract": {
+      "type": "application",
+      "root": "apps/production-contract",
+      "entryFile": "main",
+      "sourceRoot": "apps/production-contract/src",
+      "compilerOptions": {
+        "tsConfigPath": "apps/production-contract/tsconfig.app.json"
+      }
+    },
+    "battery-service": {
+      "type": "application",
+      "root": "apps/battery-service",
+      "entryFile": "main",
+      "sourceRoot": "apps/battery-service/src",
+      "compilerOptions": {
+        "tsConfigPath": "apps/battery-service/tsconfig.app.json"
+      }
+    },
+    "production-storer": {
+      "type": "application",
+      "root": "apps/production-storer",
+      "entryFile": "main",
+      "sourceRoot": "apps/production-storer/src",
+      "compilerOptions": {
+        "tsConfigPath": "apps/production-storer/tsconfig.app.json"
+      }
+    },
+    "mocker": {
+      "type": "application",
+      "root": "apps/mocker",
+      "entryFile": "main",
+      "sourceRoot": "apps/mocker/src",
+      "compilerOptions": {
+        "tsConfigPath": "apps/mocker/tsconfig.app.json"
+      }
+    },
+    "consumption-day-storer": {
+      "type": "application",
+      "root": "apps/consumption-day-storer",
+      "entryFile": "main",
+      "sourceRoot": "apps/consumption-day-storer/src",
+      "compilerOptions": {
+        "tsConfigPath": "apps/consumption-day-storer/tsconfig.app.json"
+      }
+    },
+    "client-autarky-detector": {
+      "type": "application",
+      "root": "apps/client-autarky-detector",
+      "entryFile": "main",
+      "sourceRoot": "apps/client-autarky-detector/src",
+      "compilerOptions": {
+        "tsConfigPath": "apps/client-autarky-detector/tsconfig.app.json"
+      }
+    },
+    "five-min-autarky-aggregator": {
+      "type": "application",
+      "root": "apps/five-min-autarky-aggregator",
+      "entryFile": "main",
+      "sourceRoot": "apps/five-min-autarky-aggregator/src",
+      "compilerOptions": {
+        "tsConfigPath": "apps/five-min-autarky-aggregator/tsconfig.app.json"
+      }
+    },
+    "client-autarky-notifier": {
+      "type": "application",
+      "root": "apps/client-autarky-notifier",
+      "entryFile": "main",
+      "sourceRoot": "apps/client-autarky-notifier/src",
+      "compilerOptions": {
+        "tsConfigPath": "apps/client-autarky-notifier/tsconfig.app.json"
+      }
+    },
+    "autarky-hour-storer": {
+      "type": "application",
+      "root": "apps/autarky-hour-storer",
+      "entryFile": "main",
+      "sourceRoot": "apps/autarky-hour-storer/src",
+      "compilerOptions": {
+        "tsConfigPath": "apps/autarky-hour-storer/tsconfig.app.json"
+      }
+    },
+    "autarky-day-storer": {
+      "type": "application",
+      "root": "apps/autarky-day-storer",
+      "entryFile": "main",
+      "sourceRoot": "apps/autarky-day-storer/src",
+      "compilerOptions": {
+        "tsConfigPath": "apps/autarky-day-storer/tsconfig.app.json"
+      }
+    },
+    "consumption-authorizer": {
+      "type": "application",
+      "root": "apps/consumption-authorizer",
+      "entryFile": "main",
+      "sourceRoot": "apps/consumption-authorizer/src",
+      "compilerOptions": {
+        "tsConfigPath": "apps/consumption-authorizer/tsconfig.app.json"
+      }
+    },
+    "autarky-viewer": {
+      "type": "application",
+      "root": "apps/autarky-viewer",
+      "entryFile": "main",
+      "sourceRoot": "apps/autarky-viewer/src",
+      "compilerOptions": {
+        "tsConfigPath": "apps/autarky-viewer/tsconfig.app.json"
+      }
+    },
+    "district-autarky-detector": {
+      "type": "application",
+      "root": "apps/district-autarky-detector",
+      "entryFile": "main",
+      "sourceRoot": "apps/district-autarky-detector/src",
+      "compilerOptions": {
+        "tsConfigPath": "apps/district-autarky-detector/tsconfig.app.json"
+      }
+    },
+    "district-autarky-notifier": {
+      "type": "application",
+      "root": "apps/district-autarky-notifier",
+      "entryFile": "main",
+      "sourceRoot": "apps/district-autarky-notifier/src",
+      "compilerOptions": {
+        "tsConfigPath": "apps/district-autarky-notifier/tsconfig.app.json"
+      }
+    }
+  }
+}
